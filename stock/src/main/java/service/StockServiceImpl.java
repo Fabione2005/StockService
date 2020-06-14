@@ -6,21 +6,22 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dao.StockDao;
+import dao.StockJpaSpring;
 import model.Stock;
 
 @Service
 public class StockServiceImpl implements StockService{
 
 	@Autowired
-	StockDao dao;
+	StockJpaSpring dao;
 	
 	@Override
 	public boolean addStock(Stock stock) {
 		
-		if(dao.retrieveStockById(stock.getId()) == null) 
+		if(!dao.findById(stock.getId()).isPresent()) 
 		{
-			dao.addNewStock(stock);
+			stock.setDevelopmentUpdate();
+			dao.save(stock);
 			return true;
 		}
 		return false;
@@ -28,24 +29,25 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	public List<Stock> retriveStocks() {
-		return dao.retriveAllStocks();
+		return dao.findAll();
 	}
 
 	@Override
 	public void updateStock(Stock stock) {
 		
-		if(dao.retrieveStockById(stock.getId()) != null) 
+		if(dao.findById(stock.getId()) != null) 
 		{
-			dao.updateStock(stock);
+			stock.setDevelopmentUpdate();
+			dao.save(stock);
 		}
 	}
 
 	@Override
 	public boolean deleteStock(int idStock) {
 		
-		if(dao.retrieveStockById(idStock) != null) 
+		if(dao.findById(idStock) != null) 
 		{
-			dao.deleteStock(idStock);
+			dao.deleteById(idStock);
 			return true;
 		}
 		
@@ -54,13 +56,13 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	public Stock findStock(int id) {
-		return dao.retrieveStockById(id);
+		return dao.findById(id).get();
 	}
 
 	@Override
 	public String updateStockDevelopment(int id) {
 		String result = null;
-		Stock stock = dao.retrieveStockById(id);
+		Stock stock = dao.findById(id).get();
 		
 		if(stock != null) 
 		{
@@ -93,7 +95,8 @@ public class StockServiceImpl implements StockService{
 			}
 			else
 			{
-				result = dao.saveOrUpdateAll(stocksToUpdate) ? "success" : "an error has ocurred";
+				dao.saveAll(stocksToUpdate);
+				result = "success";
 			}
 		}
 		else
@@ -106,7 +109,7 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	public List<Stock> retrieveStockByLastUpdate(Date lastUpdate) {
-		return dao.retrieveByLastUpdate(lastUpdate);
+		return dao.findByLastUpdate(lastUpdate);
 	}
 
 	@Override
