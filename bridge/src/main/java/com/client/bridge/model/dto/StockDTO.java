@@ -1,12 +1,10 @@
 package com.client.bridge.model.dto;
 
-import java.time.LocalDate;
-
 public class StockDTO{
 
 	private String name;
 	
-	private LocalDate lastUpdate;
+	private String lastUpdate;
 	
 	private double developmentUpdate;
 	
@@ -22,11 +20,11 @@ public class StockDTO{
 		this.name = name;
 	}
 
-	public LocalDate getLastUpdate() {
+	public String getLastUpdate() {
 		return lastUpdate;
 	}
 
-	public void setLastUpdate(LocalDate lastUpdate) {
+	public void setLastUpdate(String lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
 

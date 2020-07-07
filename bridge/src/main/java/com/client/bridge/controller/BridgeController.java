@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.client.bridge.model.dto.StockDTO;
 import com.client.bridge.model.dto.UserDTO;
 import com.client.bridge.model.generic.BaseResultDTO;
 import com.client.bridge.model.wrapper.StockResultDTO;
@@ -43,6 +44,12 @@ public class BridgeController {
 	public BaseResultDTO createUserService(@RequestBody UserDTO user) 
 	{
 		return service.createUserService(user);
+	}
+	
+	@PostMapping(value = "/stocks/addStock",consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public BaseResultDTO createStockService(@RequestBody StockDTO stock) 
+	{
+		return service.createStockService(stock);
 	}
 	
 	@GetMapping(value = "/users/login/{userName}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,5 +1,6 @@
 package com.client.bridge.service;
 
+import com.client.bridge.model.dto.StockDTO;
 import com.client.bridge.model.dto.UserDTO;
 import com.client.bridge.model.generic.BaseResultDTO;
 import com.client.bridge.model.wrapper.StockResultDTO;
@@ -11,5 +12,6 @@ public interface BridgeService
 	UserResultDTO retrieveAllUsers();
 	BaseResultDTO logOutService();
 	BaseResultDTO createUserService(UserDTO user);
+	BaseResultDTO createStockService(StockDTO stock);
 	UserResultDTO loggingService(String userName, String password);
 }

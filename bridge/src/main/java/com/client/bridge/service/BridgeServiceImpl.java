@@ -1,6 +1,7 @@
 package com.client.bridge.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -115,6 +116,11 @@ public class BridgeServiceImpl implements BridgeService {
 				}
 			}
 		}
+		else
+		{
+			response.setResponseCode("534");
+			response.setResponseDescription("There is not user Logged in to the application");
+		}
 
 		return response;
 	}
@@ -150,6 +156,41 @@ public class BridgeServiceImpl implements BridgeService {
 		}
 
 		return result;
+	}
+
+	@Override
+	public BaseResultDTO createStockService(StockDTO stock) {
+		
+		BaseResultDTO response = new BaseResultDTO();
+		
+		UserDTO userLogged = template.getForObject(urlBaseUsers + "/users/logged", UserDTO.class);
+		
+		if (userLogged != null)
+		{
+			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE))
+			{
+				if(stock != null) 
+				{
+//					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+//					LocalDate localDate = LocalDate.now();
+//					stock.setLastUpdate(dtf.format(localDate));
+					template.postForEntity(urlBaseStocks + "/stocks", stock, String.class);
+					return response;
+				}
+			}
+			else
+			{
+				response.setResponseCode("540");
+				response.setResponseDescription("You are not allow to create a new stock");
+			}
+		}
+		else
+		{
+			response.setResponseCode("534");
+			response.setResponseDescription("There is not user Logged in to the application");
+		}
+		
+		return response;
 	}
 
 }
