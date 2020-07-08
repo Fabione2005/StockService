@@ -1,7 +1,6 @@
 package com.client.bridge.service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -171,9 +170,8 @@ public class BridgeServiceImpl implements BridgeService {
 			{
 				if(stock != null) 
 				{
-//					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-mm-dd");
-//					LocalDate localDate = LocalDate.now();
-//					stock.setLastUpdate(dtf.format(localDate));
+					LocalDate localDate = LocalDate.now();
+					stock.setLastUpdate(String.valueOf(localDate));
 					template.postForEntity(urlBaseStocks + "/stocks", stock, String.class);
 					return response;
 				}
