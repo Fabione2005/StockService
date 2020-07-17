@@ -2,12 +2,13 @@ package com.client.bridge.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.RestTemplate;
 
-@ComponentScan(basePackages = {"com.client.bridge.controller","com.client.bridge.service"})
+@ComponentScan(basePackages = {"com.client.bridge.controller","com.client.bridge.service","com.client.bridge.app"})
 @SpringBootApplication
 public class ClientServiceApplication {
 
@@ -16,6 +17,7 @@ public class ClientServiceApplication {
 	}
 	
 	@Bean
+	@LoadBalanced
 	public RestTemplate template() {
 		RestTemplate template=new RestTemplate();
 		BasicAuthenticationInterceptor intercep;	

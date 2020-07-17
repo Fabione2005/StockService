@@ -8,14 +8,15 @@
 		<version>2.3.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.client</groupId>
-	<artifactId>bridge</artifactId>
+	<groupId>com.eureka</groupId>
+	<artifactId>eurekaServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ClientService</name>
-	<description>Demo project for Spring Boot</description>
+	<name>eurekaServer</name>
+	<description>Servidor Eureka para microservicios</description>
 
 	<properties>
 		<java.version>1.8</java.version>
+		<spring-cloud.version>Hoxton.SR6</spring-cloud.version>
 	</properties>
 
 	<dependencies>
@@ -23,13 +24,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -41,44 +40,27 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client </artifactId>
-		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.client.bridge.app.ClientServiceApplication</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
 			</plugin>
 		</plugins>
 	</build>
-	
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>Hoxton.SR3</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 </project>

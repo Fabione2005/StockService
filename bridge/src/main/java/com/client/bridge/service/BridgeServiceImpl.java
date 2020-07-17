@@ -20,8 +20,8 @@ import com.client.bridge.model.wrapper.UserResultDTO;
 @Service
 public class BridgeServiceImpl implements BridgeService {
 
-	String urlBaseStocks = "http://localhost:8080";
-	String urlBaseUsers = "http://localhost:9090";
+	String urlBaseStocks = "http://stocks-service";
+	String urlBaseUsers = "http://users-service";
 
 	@Autowired
 	RestTemplate template;
