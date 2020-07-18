@@ -25,42 +25,42 @@ public class BridgeController {
 	@GetMapping(value = "/stocks", produces = MediaType.APPLICATION_JSON_VALUE)
 	public StockResultDTO retrieveAllStocks() 
 	{
-		return service.retrieveAllStocks();
+		return service.getStockService().retrieveAllStocks();
 	}
 	
 	@GetMapping(value = "/users/all", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserResultDTO retrieveAllUsers()
 	{
-		return service.retrieveAllUsers();
+		return service.getUserService().retrieveAllUsers();
 	}
 	
 	@PutMapping(value = "/users/logout", produces = MediaType.APPLICATION_JSON_VALUE)
 	public BaseResultDTO logOutService() 
 	{
-		return service.logOutService();
+		return service.getUserService().logOutService();
 	}
 	
 	@PutMapping(value = "/users/status/{name}/{active}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public BaseResultDTO userStatusService(@PathVariable String name,@PathVariable boolean active) 
 	{
-		return service.changeUserStatusService(name, active);				
+		return service.getUserService().changeUserStatusService(name, active);				
 	}
 	
 	@PostMapping(value = "/users/addUser",consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public BaseResultDTO createUserService(@RequestBody UserDTO user) 
 	{
-		return service.createUserService(user);
+		return service.getUserService().createUserService(user);
 	}
 	
 	@PostMapping(value = "/stocks/addStock",consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public BaseResultDTO createStockService(@RequestBody StockDTO stock) 
 	{
-		return service.createStockService(stock);
+		return service.getStockService().createStockService(stock);
 	}
 	
 	@GetMapping(value = "/users/login/{userName}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserResultDTO loggingService(@PathVariable String userName,@PathVariable String password) 
 	{
-		return service.loggingService(userName, password);
+		return service.getUserService().loggingService(userName, password);
 	}
 }

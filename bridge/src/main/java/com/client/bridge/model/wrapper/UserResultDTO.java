@@ -15,6 +15,11 @@ public class UserResultDTO extends BaseResultDTO
 		this.userArray = userArray;
 	}
 	
+	public UserResultDTO(String responseCode, String respondeDescription) 
+	{
+		super(responseCode,respondeDescription);
+	}
+	
 	public UserResultDTO() 
 	{
 		super();
@@ -27,6 +32,5 @@ public class UserResultDTO extends BaseResultDTO
 	public void setUserArray(List<UserDTO> userArray) {
 		this.userArray = userArray;
 	}
-	
 	
 }

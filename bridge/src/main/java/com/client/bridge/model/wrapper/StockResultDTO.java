@@ -17,6 +17,11 @@ public class StockResultDTO extends BaseResultDTO{
 		super();
 		this.stockArray = stockArray;
 	}
+	
+	public StockResultDTO(String responseCode, String respondeDescription) 
+	{
+		super(responseCode,respondeDescription);
+	}
 
 	public List<StockDTO> getStockArray() {
 		return stockArray;

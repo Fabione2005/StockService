@@ -120,4 +120,8 @@ public class UserDTO
 		this.createdDate = date;
 		this.createdby = createdby;
 	}
+	
+	public static boolean checkLoggedUser(UserDTO userLogged) {
+		return userLogged != null && userLogged.isActive();
+	}
 }
