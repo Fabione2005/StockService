@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,6 +35,26 @@ public class User {
 	
 	private boolean logged;
 	
+	private LocalDateTime lastTimeLogged;
+	
+	private boolean active;
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public LocalDateTime getLastTimeLogged() {
+		return lastTimeLogged;
+	}
+
+	public void setLastTimeLogged(LocalDateTime lastTimeLogged) {
+		this.lastTimeLogged = lastTimeLogged;
+	}
+
 	public boolean isLogged() {
 		return logged;
 	}

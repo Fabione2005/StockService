@@ -1,6 +1,7 @@
 package com.client.bridge.model.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UserDTO 
 {
@@ -22,6 +23,26 @@ public class UserDTO
 	
 	private boolean logged;
 	
+	private LocalDateTime lastTimeLogged;
+	
+	private boolean active;
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public LocalDateTime getLastTimeLogged() {
+		return lastTimeLogged;
+	}
+
+	public void setLastTimeLogged(LocalDateTime lastTimeLogged) {
+		this.lastTimeLogged = lastTimeLogged;
+	}
+
 	public int getId() {
 		return id;
 	}

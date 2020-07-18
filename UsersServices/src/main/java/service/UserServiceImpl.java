@@ -1,5 +1,6 @@
 package service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,11 +93,30 @@ public class UserServiceImpl implements UserService
 	}
 
 	@Override
-	public boolean logInOrLogOutUser(int id,boolean logged) {
+	public boolean logInOrLogOutUser(int id,boolean logged,LocalDateTime lastLoggedTime) {
 		 
-		dao.LogInOrLogOutUser(id, logged);
+		if(logged) 
+		{
+			dao.LogInUser(id,logged);
+		}
+		else
+		{
+			dao.LogOutUser(id,logged,lastLoggedTime);
+		}
+		
 		
 		return true;
+	}
+
+	@Override
+	public boolean setStatusUser(int id, boolean active) {
+		if(dao.findById(id) != null) 
+		{
+			dao.setStatusUser(id, active);
+			return true;
+		}
+		
+		return false;
 	}
 
 }

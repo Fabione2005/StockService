@@ -1,5 +1,6 @@
 package service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import model.User;
@@ -14,5 +15,6 @@ public interface UserService {
 	User retrieveUserById(int id);
 	User retrieveUserByUserName(String userName);
 	User retrieveUserLogged();
-	boolean logInOrLogOutUser(int id,boolean logged);
+	boolean logInOrLogOutUser(int id,boolean logged,LocalDateTime lastLoggedTime);
+	boolean setStatusUser(int id,boolean active);
 }

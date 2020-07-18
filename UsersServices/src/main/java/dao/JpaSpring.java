@@ -1,5 +1,7 @@
 package dao;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,6 +30,16 @@ public interface JpaSpring extends JpaRepository<User, Integer>
 	
 	@Transactional
 	@Modifying
+	@Query("Update User c set c.logged =:logged , c.lastTimeLogged =:lastTimeLogged where c.id=:id")
+	void LogOutUser(@Param("id")int id,@Param("logged")boolean logged,@Param("lastTimeLogged")LocalDateTime lastLoggedTime);
+	
+	@Transactional
+	@Modifying
 	@Query("Update User c set c.logged =:logged where c.id=:id")
-	void LogInOrLogOutUser(@Param("id")int id,@Param("logged")boolean logged);
+	void LogInUser(@Param("id")int id,@Param("logged")boolean logged);
+	
+	@Transactional
+	@Modifying
+	@Query("Update User c set c.active =:active where c.id=:id")
+	void setStatusUser(@Param("id")int id,@Param("active")boolean logged);
 }

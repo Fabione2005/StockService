@@ -18,7 +18,7 @@ public class StockServiceImpl implements StockService{
 	@Override
 	public boolean addStock(Stock stock) {
 		
-		if(!dao.findById(stock.getId()).isPresent()) 
+		if(!dao.findById(stock.getId()).isPresent() && dao.findByName(stock.getName()) == null) 
 		{
 			stock.setDevelopmentUpdate();
 			dao.save(stock);

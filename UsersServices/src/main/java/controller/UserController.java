@@ -1,8 +1,10 @@
 package controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,14 +50,19 @@ public class UserController {
 		return String.valueOf(service.addUser(User));
 	}
 	
-	@PutMapping(value="users/logged/{id}/{logged}")
-	public boolean loguearOdesloguearUsuario(@PathVariable int id,@PathVariable boolean logged) {		
-		return service.logInOrLogOutUser(id, logged);
+	@PutMapping(value="users/logged/{id}/{logged}/{lastTimeLogged}")
+	public boolean loguearUsuario(@PathVariable int id,@PathVariable boolean logged,@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @PathVariable LocalDateTime lastTimeLogged) {		
+		return service.logInOrLogOutUser(id,logged,lastTimeLogged);
 	}
 	
 	@PutMapping(value="users",consumes=MediaType.APPLICATION_JSON_VALUE)
 	public void actualizarUsuario(@RequestBody User User) {		
 		service.updateUser(User);
+	}
+	
+	@PutMapping(value="users/status/{id}/{active}")
+	public boolean actualizarEstadoUsuario(@PathVariable int id,@PathVariable boolean active) {		
+		return service.setStatusUser(id, active);
 	}
 	
 	@DeleteMapping(value="users/{id}")

@@ -14,4 +14,5 @@ public interface BridgeService
 	BaseResultDTO createUserService(UserDTO user);
 	BaseResultDTO createStockService(StockDTO stock);
 	UserResultDTO loggingService(String userName, String password);
+	BaseResultDTO changeUserStatusService(String name, boolean active);
 }

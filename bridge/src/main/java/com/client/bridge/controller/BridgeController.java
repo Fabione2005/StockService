@@ -40,6 +40,12 @@ public class BridgeController {
 		return service.logOutService();
 	}
 	
+	@PutMapping(value = "/users/status/{name}/{active}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public BaseResultDTO userStatusService(@PathVariable String name,@PathVariable boolean active) 
+	{
+		return service.changeUserStatusService(name, active);				
+	}
+	
 	@PostMapping(value = "/users/addUser",consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public BaseResultDTO createUserService(@RequestBody UserDTO user) 
 	{
