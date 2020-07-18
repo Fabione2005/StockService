@@ -97,26 +97,15 @@ public class UserServiceImpl implements UserService
 		 
 		if(logged) 
 		{
-			dao.LogInUser(id,logged);
+			dao.LogOutUser(id,logged);
 		}
 		else
 		{
-			dao.LogOutUser(id,logged,lastLoggedTime);
+			dao.LogInUser(id,logged,lastLoggedTime);
 		}
 		
 		
 		return true;
-	}
-
-	@Override
-	public boolean setStatusUser(int id, boolean active) {
-		if(dao.findById(id) != null) 
-		{
-			dao.setStatusUser(id, active);
-			return true;
-		}
-		
-		return false;
 	}
 
 }

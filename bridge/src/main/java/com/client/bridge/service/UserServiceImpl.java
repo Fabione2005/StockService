@@ -44,7 +44,8 @@ public class UserServiceImpl implements UserBridgeService {
 						.filter(i -> i.getRole().equals(Roles.USER_ROLE)).collect(Collectors.toList()));
 			}
 		} else {
-			result = new UserResultDTO(this.userLoggedInfo.getResponseCode(),this.userLoggedInfo.getResponseDescription());
+			result = new UserResultDTO(this.userLoggedInfo.getResponseCode(),
+					this.userLoggedInfo.getResponseDescription());
 		}
 
 		return result;
@@ -63,7 +64,8 @@ public class UserServiceImpl implements UserBridgeService {
 			return new BaseResultDTO();
 		}
 
-		BaseResultDTO response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),this.userLoggedInfo.getResponseDescription());
+		BaseResultDTO response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),
+				this.userLoggedInfo.getResponseDescription());
 		return response;
 	}
 
@@ -92,7 +94,8 @@ public class UserServiceImpl implements UserBridgeService {
 				}
 			}
 		} else {
-			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),this.userLoggedInfo.getResponseDescription());
+			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),
+					this.userLoggedInfo.getResponseDescription());
 		}
 
 		return response;
@@ -102,7 +105,7 @@ public class UserServiceImpl implements UserBridgeService {
 	public UserResultDTO loggingService(String userName, String password) {
 
 		UserResultDTO result = new UserResultDTO();
-		
+
 		UserDTO userLogged = userLoggedInfo.getUserArray() != null
 				? userLoggedInfo.getUserArray().stream().findFirst().get()
 				: null;
@@ -112,43 +115,22 @@ public class UserServiceImpl implements UserBridgeService {
 
 			if (user != null) {
 
-				long minutesDiff = user.getLastTimeLogged() != null
-						? Duration.between(user.getLastTimeLogged(), LocalDateTime.now()).toMinutes()
-						: 1;
+				if (user.getPassword().equals(password)) {
 
-				if (minutesDiff < DateTimeConstans.MAX_MINUTES_UNLOG
-						|| user.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+					template.put(URLConstans.USERS_URL + "/users/logged/" + user.getId() + "/" + true + "/"
+							+ LocalDateTime.now(), null);
+					List<UserDTO> listTemp = new ArrayList<UserDTO>();
+					user.setLogged(true);
+					listTemp.add(user);
+					result.setUserArray(listTemp);
 
-					if (user.getPassword().equals(password)) {
-
-						if (user.isActive()) {
-
-							template.put(URLConstans.USERS_URL + "/users/logged/" + user.getId() + "/" + true + "/"
-									+ LocalDateTime.now(), null);
-							List<UserDTO> listTemp = new ArrayList<UserDTO>();
-							user.setLogged(true);
-							listTemp.add(user);
-							result.setUserArray(listTemp);
-						} else {
-
-							result.setResponseCode("585");
-							result.setResponseDescription(
-									"The user is not active, if you want to activate the user, ask for a admin user");
-						}
-
-					} else {
-
-						result.setResponseCode("532");
-						result.setResponseDescription("The password is incorrect");
-
-					}
 				} else {
-					template.put(URLConstans.USERS_URL + "/users/status/" + user.getId() + "/" + false, null);
 
-					result.setResponseCode("531");
-					result.setResponseDescription(
-							"The User trying to Log In hasn´t logg in a long time, his status is now inactive");
+					result.setResponseCode("532");
+					result.setResponseDescription("The password is incorrect");
+
 				}
+
 			} else {
 				result.setResponseCode("531");
 				result.setResponseDescription("The userName provided is not registered");
@@ -161,37 +143,6 @@ public class UserServiceImpl implements UserBridgeService {
 		}
 
 		return result;
-	}
-
-	@Override
-	public BaseResultDTO changeUserStatusService(String userName, boolean active) {
-
-		BaseResultDTO response = new BaseResultDTO();
-
-		UserDTO userLogged = userLoggedInfo.getUserArray() != null
-				? userLoggedInfo.getUserArray().stream().findFirst().get()
-				: null;
-
-		if (UserDTO.checkLoggedUser(userLogged)) {
-			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
-				UserDTO user = template.getForObject(URLConstans.USERS_URL + "/users/search/" + userName,
-						UserDTO.class);
-				if (user != null) {
-					template.put(URLConstans.USERS_URL + "/users/status/" + user.getId() + "/" + active, null);
-				} else {
-					response.setResponseCode("531");
-					response.setResponseDescription("The userName provided is not registered");
-				}
-
-			} else {
-				response.setResponseCode("547");
-				response.setResponseDescription("You are not allow to change the status of this user");
-			}
-		} else {
-			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),this.userLoggedInfo.getResponseDescription());
-		}
-
-		return response;
 	}
 
 	@Override

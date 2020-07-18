@@ -25,16 +25,6 @@ public class UserDTO
 	
 	private LocalDateTime lastTimeLogged;
 	
-	private boolean active;
-	
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
 	public LocalDateTime getLastTimeLogged() {
 		return lastTimeLogged;
 	}
@@ -122,6 +112,6 @@ public class UserDTO
 	}
 	
 	public static boolean checkLoggedUser(UserDTO userLogged) {
-		return userLogged != null && userLogged.isActive();
+		return userLogged != null;
 	}
 }

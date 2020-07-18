@@ -11,5 +11,4 @@ public interface UserBridgeService
 	BaseResultDTO logOutService();
 	BaseResultDTO createUserService(UserDTO user);
 	UserResultDTO loggingService(String userName, String password);
-	BaseResultDTO changeUserStatusService(String name, boolean active);
 }

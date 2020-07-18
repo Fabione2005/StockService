@@ -31,15 +31,11 @@ public interface JpaSpring extends JpaRepository<User, Integer>
 	@Transactional
 	@Modifying
 	@Query("Update User c set c.logged =:logged , c.lastTimeLogged =:lastTimeLogged where c.id=:id")
-	void LogOutUser(@Param("id")int id,@Param("logged")boolean logged,@Param("lastTimeLogged")LocalDateTime lastLoggedTime);
+	void LogInUser(@Param("id")int id,@Param("logged")boolean logged,@Param("lastTimeLogged")LocalDateTime lastLoggedTime);
 	
 	@Transactional
 	@Modifying
 	@Query("Update User c set c.logged =:logged where c.id=:id")
-	void LogInUser(@Param("id")int id,@Param("logged")boolean logged);
+	void LogOutUser(@Param("id")int id,@Param("logged")boolean logged);
 	
-	@Transactional
-	@Modifying
-	@Query("Update User c set c.active =:active where c.id=:id")
-	void setStatusUser(@Param("id")int id,@Param("active")boolean logged);
 }

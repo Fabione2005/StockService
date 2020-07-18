@@ -16,5 +16,4 @@ public interface UserService {
 	User retrieveUserByUserName(String userName);
 	User retrieveUserLogged();
 	boolean logInOrLogOutUser(int id,boolean logged,LocalDateTime lastLoggedTime);
-	boolean setStatusUser(int id,boolean active);
 }

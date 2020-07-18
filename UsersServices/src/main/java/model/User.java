@@ -37,16 +37,6 @@ public class User {
 	
 	private LocalDateTime lastTimeLogged;
 	
-	private boolean active;
-	
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
 	public LocalDateTime getLastTimeLogged() {
 		return lastTimeLogged;
 	}
