@@ -64,7 +64,9 @@ public class StockServiceImpl implements StockBridgeService
 				if (stock != null) {
 					LocalDate localDate = LocalDate.now();
 					stock.setLastUpdate(String.valueOf(localDate));
-					template.postForEntity(URLConstans.STOCKS_URL + "/stocks", stock, String.class);
+					String responseDescription = String.valueOf(template.postForEntity(URLConstans.STOCKS_URL + "/stocks", stock, String.class));
+					response.setResponseDescription(responseDescription);
+					response.setResponseCode(responseDescription != null ? "0" : "545");
 					return response;
 				}
 			} else {

@@ -1,4 +1,4 @@
-package com.client.bridge.app;
+package com.client.bridge;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

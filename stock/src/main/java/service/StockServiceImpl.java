@@ -16,15 +16,15 @@ public class StockServiceImpl implements StockService{
 	StockJpaSpring dao;
 	
 	@Override
-	public boolean addStock(Stock stock) {
+	public String addStock(Stock stock) {
 		
 		if(!dao.findById(stock.getId()).isPresent() && dao.findByName(stock.getName()) == null) 
 		{
 			stock.setDevelopmentUpdate();
 			dao.save(stock);
-			return true;
+			return "";
 		}
-		return false;
+		return "This Stock is already registered";
 	}
 
 	@Override

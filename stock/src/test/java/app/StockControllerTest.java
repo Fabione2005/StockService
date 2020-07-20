@@ -24,7 +24,7 @@ public class StockControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-//	@Test
+	@Test
 //	@Order(1)
 	public void retrieveStocks() throws Exception {
 		mockMvc.perform(get("/stocks")).andDo(print());

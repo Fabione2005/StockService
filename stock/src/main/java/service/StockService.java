@@ -6,7 +6,7 @@ import java.util.List;
 import model.Stock;
 
 public interface StockService {
-	boolean addStock(Stock stock);
+	String addStock(Stock stock);
 	List<Stock> retriveStocks();
 	void updateStock(Stock stock);
 	boolean deleteStock(int idStock);
