@@ -10,21 +10,14 @@ import dao.JpaSpring;
 import model.User;
 
 @Service
-public class UserServiceImpl implements UserService
-{
-	
+public class UserServiceImpl implements UserService {
+
 	@Autowired
 	JpaSpring dao;
 
 	@Override
-	public boolean addUser(User user) {
-		
-		if(dao.findByUserName(user.getUserName()) == null) 
-		{
-			dao.save(user);
-			return true;
-		}
-		return false;
+	public void addUser(User user) {
+		dao.save(user);
 	}
 
 	@Override
@@ -35,20 +28,18 @@ public class UserServiceImpl implements UserService
 	@Override
 	public void updateUser(User user) {
 		User userFind = dao.findById(user.getId()).get();
-		if(userFind != null) 
-		{
+		if (userFind != null) {
 			dao.save(user);
 		}
 	}
 
 	@Override
 	public boolean deleteUser(int idUser) {
-		if(dao.findById(idUser) != null) 
-		{
+		if (dao.findById(idUser) != null) {
 			dao.deleteById(idUser);
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -59,31 +50,29 @@ public class UserServiceImpl implements UserService
 
 	@Override
 	public boolean deleteUserByUserName(String userName) {
-		
+
 		User user = dao.findByUserName(userName);
-		
-		if(user != null) 
-		{
+
+		if (user != null) {
 			dao.deleteById(user.getId());
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	@Override
 	public void updateUserByUserName(User user) {
-		if(dao.findByUserName(user.getUserName()) != null) 
-		{
+		if (dao.findByUserName(user.getUserName()) != null) {
 			dao.save(user);
 		}
 	}
 
 	@Override
 	public User retrieveUserByUserName(String userName) {
-		
+
 		User user = dao.findByUserName(userName);
-		
+
 		return user;
 	}
 
@@ -93,18 +82,14 @@ public class UserServiceImpl implements UserService
 	}
 
 	@Override
-	public boolean logInOrLogOutUser(int id,boolean logged,LocalDateTime lastLoggedTime) {
-		 
-		if(logged) 
-		{
-			dao.LogOutUser(id,logged);
+	public boolean logInOrLogOutUser(int id, boolean logged, LocalDateTime lastLoggedTime) {
+
+		if (logged) {
+			dao.LogOutUser(id, logged);
+		} else {
+			dao.LogInUser(id, logged, lastLoggedTime);
 		}
-		else
-		{
-			dao.LogInUser(id,logged,lastLoggedTime);
-		}
-		
-		
+
 		return true;
 	}
 

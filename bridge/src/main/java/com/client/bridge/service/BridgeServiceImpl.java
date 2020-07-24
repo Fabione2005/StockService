@@ -79,7 +79,7 @@ public class BridgeServiceImpl implements BridgeService {
 
 		} else {
 			userLoggedResponse = new UserResultDTO("520",
-					"There is not user logged into the application, please Log first");
+					"There is not user logged into the application, please LogIn first");
 		}
 		return userLoggedResponse;
 	}

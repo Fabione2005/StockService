@@ -6,7 +6,7 @@ import java.util.List;
 import model.User;
 
 public interface UserService {
-	boolean addUser(User user);
+	void addUser(User user);
 	List<User> retriveUsers();
 	void updateUser(User user);
 	void updateUserByUserName(User user);

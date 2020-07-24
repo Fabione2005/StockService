@@ -1,5 +1,6 @@
 package com.client.bridge;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -43,20 +44,32 @@ class ClientServiceApplicationTests {
 	@Test
 	public void addUser() throws Exception {
 		mockMvc.perform(post("/users/addUser").contentType(MediaType.APPLICATION_JSON).content(
-				"{\"fullName\":\"Bobureño Lokis\",\"userName\":\"Lokitoys\",\"email\":\"Lokitoys@gmail.com\""
+				"{\"fullName\":\"Bobureño Lokis\",\"userName\":\"elmomoerco\",\"email\":\"Lokitoys@gmail.com\""
 						+ ",\"password\":\"123456\",\"createdDate\":\"2020-06-20\",\"role\":\"USER\"}")).andDo(print());
 	}
 
 	@Test
 	public void addStock() throws Exception {
 		mockMvc.perform(post("/stocks/addStock").contentType(MediaType.APPLICATION_JSON).content(
-				"{\"name\":\"PornHub\",\"lastUpdate\":\"2020-07-19\",\"lastPrice\":250.4,\"actualPrice\":215.7}")).andDo(print());
+				"{\"name\":\"Google\",\"lastUpdate\":\"2020-07-23\",\"lastPrice\":180,\"actualPrice\":204.4}")).andDo(print());
 	}
 	
 	@Test
 //	@Order(0)
 	public void logOutService() throws Exception{
-		mockMvc.perform(put("/users/logout"));
+		mockMvc.perform(put("/users/logout")).andDo(print());
+	}
+	
+	@Test
+//	@Order(0)
+	public void deleteStockService() throws Exception{
+		mockMvc.perform(delete("/stocks/15")).andDo(print());
+	}
+	
+	@Test
+//	@Order(0)
+	public void deleteUserService() throws Exception{
+		mockMvc.perform(delete("/user/10")).andDo(print());
 	}
 
 }

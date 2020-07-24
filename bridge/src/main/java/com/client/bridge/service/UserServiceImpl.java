@@ -1,6 +1,5 @@
 package com.client.bridge.service;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import com.client.bridge.model.dto.UserDTO;
 import com.client.bridge.model.generic.BaseResultDTO;
 import com.client.bridge.model.role.Roles;
-import com.client.bridge.model.utils.DateTimeConstans;
 import com.client.bridge.model.utils.URLConstans;
 import com.client.bridge.model.wrapper.UserResultDTO;
 
@@ -79,21 +77,77 @@ public class UserServiceImpl implements UserBridgeService {
 				: null;
 
 		if (UserDTO.checkLoggedUser(userLogged)) {
-			user.setCreatedDateAndCreatedBy(LocalDate.now(), userLogged.getFullName());
-			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
-				template.postForEntity(URLConstans.USERS_URL + "/users", user, String.class);
-				return response;
-			} else {
-				if (user.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
-					response.setResponseCode("535");
-					response.setResponseDescription("Your role dont allow you to asigned ADMIN Role to a new User");
+			UserDTO userFinded = template.getForObject(URLConstans.USERS_URL + "/users/search/" + user.getUserName(),
+					UserDTO.class);
+
+			if (userFinded == null) {
+				user.setCreatedDateAndCreatedBy(LocalDate.now(), userLogged.getFullName());
+				
+				if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+					
+					template.postForEntity(URLConstans.USERS_URL + "/users", user, String.class);
 					return response;
+					
 				} else {
-					template.postForLocation(URLConstans.USERS_URL + "/users", user);
-					return response;
+					if (user.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+						
+						response.setResponseCode("535");
+						response.setResponseDescription("Your role doesn´t allow you to asigned ADMIN Role to a new User");
+						return response;
+						
+					} else {
+						
+						template.postForLocation(URLConstans.USERS_URL + "/users", user);
+						return response;
+						
+					}
+				}
+			} else {
+				response.setResponseCode("541");
+				response.setResponseDescription("This UserName already exists in the system");
+			}
+			
+			
+		} else {
+			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),
+					this.userLoggedInfo.getResponseDescription());
+		}
+
+		return response;
+	}
+
+	@Override
+	public BaseResultDTO deleteUserService(int id) {
+
+		BaseResultDTO response = new BaseResultDTO();
+
+		UserDTO userLogged = userLoggedInfo.getUserArray() != null
+				? userLoggedInfo.getUserArray().stream().findFirst().get()
+				: null;
+
+		if (UserDTO.checkLoggedUser(userLogged)) {
+			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+				
+				UserDTO userFinded = template.getForObject(URLConstans.USERS_URL + "/users/" + id,
+						UserDTO.class);
+				if(userFinded != null) 
+				{
+					template.delete(URLConstans.USERS_URL + "/users/"+userFinded.getId());
+				}
+				else
+				{
+					response.setResponseCode("555");
+					response.setResponseDescription("The user provided is not registed in the system");
 				}
 			}
-		} else {
+			else
+			{
+				response.setResponseCode("550");
+				response.setResponseDescription("You are not allow to delete an user, please contact an Admin.");
+			}
+		}
+		else
+		{
 			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),
 					this.userLoggedInfo.getResponseDescription());
 		}

@@ -10,21 +10,15 @@ import dao.StockJpaSpring;
 import model.Stock;
 
 @Service
-public class StockServiceImpl implements StockService{
+public class StockServiceImpl implements StockService {
 
 	@Autowired
 	StockJpaSpring dao;
-	
+
 	@Override
-	public String addStock(Stock stock) {
-		
-		if(!dao.findById(stock.getId()).isPresent() && dao.findByName(stock.getName()) == null) 
-		{
-			stock.setDevelopmentUpdate();
-			dao.save(stock);
-			return "";
-		}
-		return "This Stock is already registered";
+	public void addStock(Stock stock) {
+		stock.setDevelopmentUpdate();
+		dao.save(stock);
 	}
 
 	@Override
@@ -34,9 +28,8 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	public void updateStock(Stock stock) {
-		
-		if(dao.findById(stock.getId()) != null) 
-		{
+
+		if (dao.findById(stock.getId()) != null) {
 			stock.setDevelopmentUpdate();
 			dao.save(stock);
 		}
@@ -44,14 +37,18 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	public boolean deleteStock(int idStock) {
-		
-		if(dao.findById(idStock) != null) 
-		{
+
+		if (dao.findById(idStock) != null) {
 			dao.deleteById(idStock);
 			return true;
 		}
-		
+
 		return false;
+	}
+	
+	@Override
+	public Stock findStockByName(String name) {
+		return dao.findByName(name);
 	}
 
 	@Override
@@ -63,47 +60,37 @@ public class StockServiceImpl implements StockService{
 	public String updateStockDevelopment(int id) {
 		String result = null;
 		Stock stock = dao.findById(id).get();
-		
-		if(stock != null) 
-		{
+
+		if (stock != null) {
 			double newDevelopmentValue = Math.floor(stock.getDevelopmentUpdate());
-			dao.updateStockDevelopment(id,newDevelopmentValue);
+			dao.updateStockDevelopment(id, newDevelopmentValue);
 			result = "";
-		}
-		else
-		{
+		} else {
 			result = "stock not found";
 		}
-		
-		
+
 		return result;
 	}
 
 	@Override
 	public String updateStocksByDevelopmentUpdate() {
 		String result = null;
-		
+
 		List<Stock> stocksToUpdate = dao.retrieveStockDevelopmentLike();
-		
-		if(stocksToUpdate != null && stocksToUpdate.size() > 0) 
-		{
+
+		if (stocksToUpdate != null && stocksToUpdate.size() > 0) {
 			stocksToUpdate.stream().forEach(i -> i.setDevelopmentUpdate());
-			
-			if(stocksToUpdate.stream().anyMatch(i -> i.getDevelopmentUpdate() == 0)) 
-			{
+
+			if (stocksToUpdate.stream().anyMatch(i -> i.getDevelopmentUpdate() == 0)) {
 				result = "an error has ocurred";
-			}
-			else
-			{
+			} else {
 				dao.saveAll(stocksToUpdate);
 				result = "success";
 			}
-		}
-		else
-		{
+		} else {
 			result = "no stocks where found";
 		}
-		
+
 		return result;
 	}
 
@@ -115,7 +102,7 @@ public class StockServiceImpl implements StockService{
 	@Override
 	public List<Stock> retrieveStockByDevelopmentUpdateLessValue(double developmentUpdate) {
 		return dao.retrieveByDevelopmentUpdateLessValue(developmentUpdate);
-		
+
 	}
 
 }

@@ -46,8 +46,8 @@ public class UserController {
 	}
 	
 	@PostMapping(value="users",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.TEXT_PLAIN_VALUE)
-	public String guardarUsuarioNuevo(@RequestBody User User) {		
-		return String.valueOf(service.addUser(User));
+	public void guardarUsuarioNuevo(@RequestBody User User) {		
+		service.addUser(User);
 	}
 	
 	@PutMapping(value="users/logged/{id}/{logged}/{lastTimeLogged}")

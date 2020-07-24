@@ -62,12 +62,21 @@ public class StockServiceImpl implements StockBridgeService
 		if (UserDTO.checkLoggedUser(userLogged)) {
 			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
 				if (stock != null) {
-					LocalDate localDate = LocalDate.now();
-					stock.setLastUpdate(String.valueOf(localDate));
-					String responseDescription = String.valueOf(template.postForEntity(URLConstans.STOCKS_URL + "/stocks", stock, String.class));
-					response.setResponseDescription(responseDescription);
-					response.setResponseCode(responseDescription != null ? "0" : "545");
-					return response;
+					
+					StockDTO stockFind = template.getForObject(URLConstans.STOCKS_URL + "/stocks/name/"+stock.getName(), StockDTO.class);
+					
+					if(stockFind == null) 
+					{
+						LocalDate localDate = LocalDate.now();
+						stock.setLastUpdate(String.valueOf(localDate));
+						template.postForEntity(URLConstans.STOCKS_URL + "/stocks", stock, String.class);
+						return response;
+					}
+					else
+					{
+						response.setResponseCode("541");
+						response.setResponseDescription("This Stock already exists in the system");
+					}
 				}
 			} else {
 				response.setResponseCode("540");
@@ -87,6 +96,39 @@ public class StockServiceImpl implements StockBridgeService
 		{
 			this.userLoggedInfo = userLoggedResult;
 		}
+		
+	}
+
+	@Override
+	public BaseResultDTO deleteStockService(int id) {
+		BaseResultDTO response = new BaseResultDTO();
+
+		UserDTO userLogged = userLoggedInfo.getUserArray() != null ? userLoggedInfo.getUserArray().stream().findFirst().get()
+				: null;
+		
+		if (UserDTO.checkLoggedUser(userLogged)) 
+		{
+			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE))
+			{
+				StockDTO stockFind = template.getForObject(URLConstans.STOCKS_URL + "/stocks/"+id, StockDTO.class);
+				
+				if(stockFind != null) 
+				{
+					template.delete(URLConstans.STOCKS_URL + "/stocks/"+stockFind.getId());
+				}
+			}
+			else
+			{
+				response.setResponseCode("540");
+				response.setResponseDescription("You are not allow to delete a stock");
+			}
+		}
+		else
+		{
+			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),this.userLoggedInfo.getResponseDescription());
+		}
+		
+		return response;
 	}
 
 }

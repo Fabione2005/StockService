@@ -10,4 +10,5 @@ public interface StockBridgeService
 	void setUserLoggValidate(UserResultDTO userLoggedResult);
 	StockResultDTO retrieveAllStocks();
 	BaseResultDTO createStockService(StockDTO stock);
+	BaseResultDTO deleteStockService(int id);
 }

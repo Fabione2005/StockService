@@ -2,6 +2,7 @@ package com.client.bridge.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,5 +57,15 @@ public class BridgeController {
 	public UserResultDTO loggingService(@PathVariable String userName,@PathVariable String password) 
 	{
 		return service.getUserService().loggingService(userName, password);
+	}
+	
+	@DeleteMapping(value="stocks/{id}")
+	public BaseResultDTO deleteStock(@PathVariable int id) {
+		return service.getStockService().deleteStockService(id);
+	}
+	
+	@DeleteMapping(value="user/{id}")
+	public BaseResultDTO deleteUser(@PathVariable int id) {
+		return service.getUserService().deleteUserService(id);
 	}
 }

@@ -31,8 +31,13 @@ public class StockController {
 	}
 	
 	@GetMapping(value="stocks/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
-	public Stock recuperarAcciones(@PathVariable int id) {
+	public Stock recuperarAccionPorId(@PathVariable int id) {
 		return service.findStock(id);
+	}
+	
+	@GetMapping(value="stocks/name/{name}",produces=MediaType.APPLICATION_JSON_VALUE)
+	public Stock recuperarAccionPorNombre(@PathVariable String name) {
+		return service.findStockByName(name);
 	}
 	
 	@GetMapping(value="stocks/date/{lastUpdate}",produces=MediaType.APPLICATION_JSON_VALUE)
@@ -46,8 +51,8 @@ public class StockController {
 	}
 	
 	@PostMapping(value="stocks",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.TEXT_PLAIN_VALUE)
-	public String guardarAccion(@RequestBody Stock stock) {		
-		return String.valueOf(service.addStock(stock));
+	public void guardarAccion(@RequestBody Stock stock) {		
+		service.addStock(stock);
 	}
 	
 	@PutMapping(value="stocks",consumes=MediaType.APPLICATION_JSON_VALUE)
