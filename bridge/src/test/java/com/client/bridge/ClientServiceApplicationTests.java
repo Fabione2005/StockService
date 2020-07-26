@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -51,7 +52,7 @@ class ClientServiceApplicationTests {
 	@Test
 	public void addStock() throws Exception {
 		mockMvc.perform(post("/stocks/addStock").contentType(MediaType.APPLICATION_JSON).content(
-				"{\"name\":\"Google\",\"lastUpdate\":\"2020-07-23\",\"lastPrice\":180,\"actualPrice\":204.4}")).andDo(print());
+				"{\"name\":\"AOC\",\"lastUpdate\":\"2020-07-25\",\"lastPrice\":45,\"actualPrice\":32}")).andDo(print());
 	}
 	
 	@Test
@@ -63,13 +64,13 @@ class ClientServiceApplicationTests {
 	@Test
 //	@Order(0)
 	public void deleteStockService() throws Exception{
-		mockMvc.perform(delete("/stocks/15")).andDo(print());
+		mockMvc.perform(delete("/stocks/7")).andDo(print());
 	}
 	
 	@Test
 //	@Order(0)
 	public void deleteUserService() throws Exception{
-		mockMvc.perform(delete("/user/10")).andDo(print());
+		mockMvc.perform(delete("/user/9")).andDo(print());
 	}
 
 }

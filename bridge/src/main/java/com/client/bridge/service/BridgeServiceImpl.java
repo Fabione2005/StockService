@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,20 +19,21 @@ import com.client.bridge.model.wrapper.UserResultDTO;
 public class BridgeServiceImpl implements BridgeService {
 
 	@Autowired
-	RestTemplate template;
+	private RestTemplate template;
 
 	@Autowired
-	UserBridgeService userService;
+	private UserBridgeService userService;
 
 	@Autowired
-	StockBridgeService stockService;
+	private StockBridgeService stockService;
+	
+	@Autowired
+	private Environment env;
 
 	@Override
 	public UserBridgeService getUserService() {
 
-		UserDTO userLogged = template.getForObject(URLConstans.USERS_URL + "/users/logged", UserDTO.class);
-
-		UserResultDTO userLoggedResponse = getUserLoggedResponse(userLogged);
+		UserResultDTO userLoggedResponse = getUserResultDTO();
 
 		userService.setUserLoggValidate(userLoggedResponse);
 
@@ -41,9 +43,7 @@ public class BridgeServiceImpl implements BridgeService {
 	@Override
 	public StockBridgeService getStockService() {
 
-		UserDTO userLogged = template.getForObject(URLConstans.USERS_URL + "/users/logged", UserDTO.class);
-
-		UserResultDTO userLoggedResponse = getUserLoggedResponse(userLogged);
+		UserResultDTO userLoggedResponse = getUserResultDTO();
 
 		stockService.setUserLoggValidate(userLoggedResponse);
 
@@ -73,14 +73,22 @@ public class BridgeServiceImpl implements BridgeService {
 				template.put(URLConstans.USERS_URL + "/users/logged/" + userLogged.getId() + "/" + false + "/"
 						+ LocalDateTime.now(), null);
 
-				userLoggedResponse = new UserResultDTO("522",
-						"Time of Logging has been exceded, you are now LogOut");
+				userLoggedResponse = new UserResultDTO(env.getProperty("error_unlogged_code"),
+						env.getProperty("error_unlogged_description"));
 			}
 
 		} else {
-			userLoggedResponse = new UserResultDTO("520",
-					"There is not user logged into the application, please LogIn first");
+			userLoggedResponse = new UserResultDTO(env.getProperty("error_message_not_user_logged_code"),
+					env.getProperty("error_message_not_user_logged_description"));
 		}
+		return userLoggedResponse;
+	}
+	
+	private UserResultDTO getUserResultDTO() {
+		
+		UserDTO userLogged = template.getForObject(URLConstans.USERS_URL + "/users/logged", UserDTO.class);
+
+		UserResultDTO userLoggedResponse = getUserLoggedResponse(userLogged);
 		return userLoggedResponse;
 	}
 

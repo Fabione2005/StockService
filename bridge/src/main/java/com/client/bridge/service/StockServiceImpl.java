@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +21,10 @@ public class StockServiceImpl implements StockBridgeService
 {
 	
 	@Autowired
-	RestTemplate template;
+	private RestTemplate template;
+	
+	@Autowired
+	private Environment env;
 	
 	private UserResultDTO userLoggedInfo;
 	
@@ -38,8 +42,8 @@ public class StockServiceImpl implements StockBridgeService
 			String message = null;
 			String code = null;
 
-			message = stocks.length == 0 ? "no stocks where found" : "";
-			code = stocks.length == 0 ? "4154" : "0";
+			message = stocks.length == 0 ? env.getProperty("error_message_not_stock_found_description") : "";
+			code = stocks.length == 0 ? env.getProperty("error_message_not_stock_found_code") : "0";
 
 			stockWrapper.setStockArray(Arrays.asList(stocks));
 			stockWrapper.setResponseCode(code);
@@ -74,13 +78,13 @@ public class StockServiceImpl implements StockBridgeService
 					}
 					else
 					{
-						response.setResponseCode("541");
-						response.setResponseDescription("This Stock already exists in the system");
+						response.setResponseCode(env.getProperty("error_message_stock_already_exists_code"));
+						response.setResponseDescription(env.getProperty("error_message_stock_already_exists_description"));
 					}
 				}
 			} else {
-				response.setResponseCode("540");
-				response.setResponseDescription("You are not allow to create a new stock");
+				response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
+				response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
 			}
 		} else {
 			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),this.userLoggedInfo.getResponseDescription());
@@ -119,8 +123,8 @@ public class StockServiceImpl implements StockBridgeService
 			}
 			else
 			{
-				response.setResponseCode("540");
-				response.setResponseDescription("You are not allow to delete a stock");
+				response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
+				response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
 			}
 		}
 		else

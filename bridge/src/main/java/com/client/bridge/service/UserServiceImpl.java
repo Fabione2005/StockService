@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,10 +20,14 @@ import com.client.bridge.model.wrapper.UserResultDTO;
 
 @Service
 public class UserServiceImpl implements UserBridgeService {
+	
 	@Autowired
-	RestTemplate template;
+	private RestTemplate template;
 
 	private UserResultDTO userLoggedInfo;
+	
+	@Autowired
+	private Environment env;
 
 	@Override
 	public UserResultDTO retrieveAllUsers() {
@@ -91,8 +96,8 @@ public class UserServiceImpl implements UserBridgeService {
 				} else {
 					if (user.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
 						
-						response.setResponseCode("535");
-						response.setResponseDescription("Your role doesn´t allow you to asigned ADMIN Role to a new User");
+						response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
+						response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
 						return response;
 						
 					} else {
@@ -103,8 +108,8 @@ public class UserServiceImpl implements UserBridgeService {
 					}
 				}
 			} else {
-				response.setResponseCode("541");
-				response.setResponseDescription("This UserName already exists in the system");
+				response.setResponseCode(env.getProperty("error_message_username_already_exists_code"));
+				response.setResponseDescription(env.getProperty("error_message_username_already_exists_description"));
 			}
 			
 			
@@ -136,14 +141,14 @@ public class UserServiceImpl implements UserBridgeService {
 				}
 				else
 				{
-					response.setResponseCode("555");
-					response.setResponseDescription("The user provided is not registed in the system");
+					response.setResponseCode(env.getProperty("error_message_user_not_registered_code"));
+					response.setResponseDescription(env.getProperty("error_message_user_not_registered_description"));
 				}
 			}
 			else
 			{
-				response.setResponseCode("550");
-				response.setResponseDescription("You are not allow to delete an user, please contact an Admin.");
+				response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
+				response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
 			}
 		}
 		else
@@ -180,20 +185,19 @@ public class UserServiceImpl implements UserBridgeService {
 
 				} else {
 
-					result.setResponseCode("532");
-					result.setResponseDescription("The password is incorrect");
+					result.setResponseCode(env.getProperty("error_message_user_password_incorrect_code"));
+					result.setResponseDescription(env.getProperty("error_message_user_password_incorrect_description"));
 
 				}
 
 			} else {
-				result.setResponseCode("531");
-				result.setResponseDescription("The userName provided is not registered");
+				result.setResponseCode(env.getProperty("error_message_user_not_registered_code"));
+				result.setResponseDescription(env.getProperty("error_message_user_not_registered_description"));
 			}
 
 		} else {
-			result.setResponseCode("533");
-			result.setResponseDescription(
-					"The user " + userLogged.getUserName() + " is logged, if you want to logIn please logOut first");
+			result.setResponseCode(env.getProperty("error_message_user_already_log_in_code"));
+			result.setResponseDescription(env.getProperty("error_message_user_already_log_in_description"));
 		}
 
 		return result;
