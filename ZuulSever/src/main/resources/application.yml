@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: servidor-zuul
+server:
+  port: 7000
+zuul:
+  routes:
+      serv-bridge: # Service to create as sample
+        path: /bridge/** #path that will be intercepted
+        serviceId: bridge-service
+        #url: http://localhost:9000
+      
+      
+eureka:                  
+  client:
+  	registerWithEureka : false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+      
+      
+     
