@@ -32,19 +32,19 @@ public class BridgeController {
 	@GetMapping(value = "/users/all", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserResultDTO retrieveAllUsers()
 	{
-		return service.getUserService().retrieveAllUsers();
+		return service.getUserService(false).retrieveAllUsers();
 	}
 	
 	@PutMapping(value = "/users/logout", produces = MediaType.APPLICATION_JSON_VALUE)
 	public BaseResultDTO logOutService() 
 	{
-		return service.getUserService().logOutService();
+		return service.getUserService(false).logOutService();
 	}
 	
 	@PostMapping(value = "/users/addUser",consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public BaseResultDTO createUserService(@RequestBody UserDTO user) 
 	{
-		return service.getUserService().createUserService(user);
+		return service.getUserService(true).createUserService(user);
 	}
 	
 	@PostMapping(value = "/stocks/addStock",consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +56,7 @@ public class BridgeController {
 	@GetMapping(value = "/users/login/{userName}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserResultDTO loggingService(@PathVariable String userName,@PathVariable String password) 
 	{
-		return service.getUserService().loggingService(userName, password);
+		return service.getUserService(true).loggingService(userName, password);
 	}
 	
 	@DeleteMapping(value="stocks/{id}")
@@ -66,6 +66,6 @@ public class BridgeController {
 	
 	@DeleteMapping(value="user/{id}")
 	public BaseResultDTO deleteUser(@PathVariable int id) {
-		return service.getUserService().deleteUserService(id);
+		return service.getUserService(false).deleteUserService(id);
 	}
 }

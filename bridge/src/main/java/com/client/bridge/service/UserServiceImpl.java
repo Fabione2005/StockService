@@ -20,12 +20,12 @@ import com.client.bridge.model.wrapper.UserResultDTO;
 
 @Service
 public class UserServiceImpl implements UserBridgeService {
-	
+
 	@Autowired
 	private RestTemplate template;
 
 	private UserResultDTO userLoggedInfo;
-	
+
 	@Autowired
 	private Environment env;
 
@@ -38,17 +38,12 @@ public class UserServiceImpl implements UserBridgeService {
 				? userLoggedInfo.getUserArray().stream().findFirst().get()
 				: null;
 
-		if (UserDTO.checkLoggedUser(userLogged)) {
-			UserDTO[] usersRegistered = template.getForObject(URLConstans.USERS_URL + "/users", UserDTO[].class);
-			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
-				result.setUserArray(Arrays.asList(usersRegistered));
-			} else {
-				result.setUserArray(Arrays.asList(usersRegistered).stream()
-						.filter(i -> i.getRole().equals(Roles.USER_ROLE)).collect(Collectors.toList()));
-			}
+		UserDTO[] usersRegistered = template.getForObject(URLConstans.USERS_URL + "/users", UserDTO[].class);
+		if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+			result.setUserArray(Arrays.asList(usersRegistered));
 		} else {
-			result = new UserResultDTO(this.userLoggedInfo.getResponseCode(),
-					this.userLoggedInfo.getResponseDescription());
+			result.setUserArray(Arrays.asList(usersRegistered).stream().filter(i -> i.getRole().equals(Roles.USER_ROLE))
+					.collect(Collectors.toList()));
 		}
 
 		return result;
@@ -81,41 +76,34 @@ public class UserServiceImpl implements UserBridgeService {
 				? userLoggedInfo.getUserArray().stream().findFirst().get()
 				: null;
 
-		if (UserDTO.checkLoggedUser(userLogged)) {
-			UserDTO userFinded = template.getForObject(URLConstans.USERS_URL + "/users/search/" + user.getUserName(),
-					UserDTO.class);
+		UserDTO userFinded = template.getForObject(URLConstans.USERS_URL + "/users/search/" + user.getUserName(),
+				UserDTO.class);
 
-			if (userFinded == null) {
-				user.setCreatedDateAndCreatedBy(LocalDate.now(), userLogged.getFullName());
-				
-				if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
-					
-					template.postForEntity(URLConstans.USERS_URL + "/users", user, String.class);
-					return response;
-					
-				} else {
-					if (user.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
-						
-						response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
-						response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
-						return response;
-						
-					} else {
-						
-						template.postForLocation(URLConstans.USERS_URL + "/users", user);
-						return response;
-						
-					}
-				}
+		if (userFinded == null) {
+			user.setCreatedDateAndCreatedBy(LocalDate.now(), userLogged.getFullName());
+
+			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+
+				template.postForEntity(URLConstans.USERS_URL + "/users", user, String.class);
+				return response;
+
 			} else {
-				response.setResponseCode(env.getProperty("error_message_username_already_exists_code"));
-				response.setResponseDescription(env.getProperty("error_message_username_already_exists_description"));
+				if (user.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+
+					response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
+					response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
+					return response;
+
+				} else {
+
+					template.postForLocation(URLConstans.USERS_URL + "/users", user);
+					return response;
+
+				}
 			}
-			
-			
 		} else {
-			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),
-					this.userLoggedInfo.getResponseDescription());
+			response.setResponseCode(env.getProperty("error_message_username_already_exists_code"));
+			response.setResponseDescription(env.getProperty("error_message_username_already_exists_description"));
 		}
 
 		return response;
@@ -130,31 +118,18 @@ public class UserServiceImpl implements UserBridgeService {
 				? userLoggedInfo.getUserArray().stream().findFirst().get()
 				: null;
 
-		if (UserDTO.checkLoggedUser(userLogged)) {
-			if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
-				
-				UserDTO userFinded = template.getForObject(URLConstans.USERS_URL + "/users/" + id,
-						UserDTO.class);
-				if(userFinded != null) 
-				{
-					template.delete(URLConstans.USERS_URL + "/users/"+userFinded.getId());
-				}
-				else
-				{
-					response.setResponseCode(env.getProperty("error_message_user_not_registered_code"));
-					response.setResponseDescription(env.getProperty("error_message_user_not_registered_description"));
-				}
+		if (userLogged.getRole().equalsIgnoreCase(Roles.ADMIN_ROLE)) {
+
+			UserDTO userFinded = template.getForObject(URLConstans.USERS_URL + "/users/" + id, UserDTO.class);
+			if (userFinded != null) {
+				template.delete(URLConstans.USERS_URL + "/users/" + userFinded.getId());
+			} else {
+				response.setResponseCode(env.getProperty("error_message_user_not_registered_code"));
+				response.setResponseDescription(env.getProperty("error_message_user_not_registered_description"));
 			}
-			else
-			{
-				response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
-				response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
-			}
-		}
-		else
-		{
-			response = new BaseResultDTO(this.userLoggedInfo.getResponseCode(),
-					this.userLoggedInfo.getResponseDescription());
+		} else {
+			response.setResponseCode(env.getProperty("error_message_user_not_allow_code"));
+			response.setResponseDescription(env.getProperty("error_message_user_not_allow_description"));
 		}
 
 		return response;

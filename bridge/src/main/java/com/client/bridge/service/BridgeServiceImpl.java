@@ -7,33 +7,39 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import com.client.bridge.exception.UserLoggingException;
 import com.client.bridge.model.dto.UserDTO;
 import com.client.bridge.model.utils.DateTimeConstans;
-import com.client.bridge.model.utils.URLConstans;
 import com.client.bridge.model.wrapper.UserResultDTO;
+import com.client.bridge.service.hystrix.LogOutUserService;
+import com.client.bridge.service.hystrix.RetrieveUserLoggedService;
 
 @Service
 public class BridgeServiceImpl implements BridgeService {
 
+	
 	@Autowired
-	private RestTemplate template;
-
+	private RetrieveUserLoggedService retrieveUser;
+	
+	@Autowired
+	private LogOutUserService logOutUser;
+	
 	@Autowired
 	private UserBridgeService userService;
 
 	@Autowired
 	private StockBridgeService stockService;
-	
+
 	@Autowired
 	private Environment env;
 
 	@Override
-	public UserBridgeService getUserService() {
+	public UserBridgeService getUserService(boolean isLogging) {
 
-		UserResultDTO userLoggedResponse = getUserResultDTO();
+		UserResultDTO userLoggedResponse = getUserResultDTO(isLogging);
 
 		userService.setUserLoggValidate(userLoggedResponse);
 
@@ -43,52 +49,54 @@ public class BridgeServiceImpl implements BridgeService {
 	@Override
 	public StockBridgeService getStockService() {
 
-		UserResultDTO userLoggedResponse = getUserResultDTO();
+		UserResultDTO userLoggedResponse = getUserResultDTO(false);
 
 		stockService.setUserLoggValidate(userLoggedResponse);
 
 		return stockService;
 	}
 
-	private UserResultDTO getUserLoggedResponse(UserDTO userLogged) {
-		UserResultDTO userLoggedResponse = null;
+	private UserResultDTO getUserLoggedResponse(UserDTO userLogged, boolean isLogging) {
+		UserResultDTO userLoggedResponse = new UserResultDTO();
 
-		//Validating userLogged
-		if (UserDTO.checkLoggedUser(userLogged)) {
-
-			long minutesDiff = userLogged.getLastTimeLogged() != null
-					? Duration.between(userLogged.getLastTimeLogged(), LocalDateTime.now()).toMinutes()
-					: 1;
+		// Validating userLogged
+		if (!isLogging) {
 			
-			//Validating userLogged
-			if (minutesDiff < DateTimeConstans.MAX_MINUTES_UNLOG)
+			if(userLogged != null) 
 			{
-				List<UserDTO> userLogList = new ArrayList<>();
-				userLogList.add(userLogged);
-				
-				userLoggedResponse = new UserResultDTO(userLogList);
+				long minutesDiff = userLogged.getLastTimeLogged() != null
+						? Duration.between(userLogged.getLastTimeLogged(), LocalDateTime.now()).toMinutes()
+								: 1;
+						
+						// Validating userLogged
+						if (minutesDiff < DateTimeConstans.MAX_MINUTES_UNLOG) {
+							List<UserDTO> userLogList = new ArrayList<>();
+							userLogList.add(userLogged);
+							
+							userLoggedResponse = new UserResultDTO(userLogList);
+						} else {
+							
+							logOutUser.logOutUser(userLogged);
+							
+							throw new UserLoggingException(env.getProperty("error_unlogged_description"), HttpStatus.UNAUTHORIZED);
+						}
 			}
 			else
 			{
-				template.put(URLConstans.USERS_URL + "/users/logged/" + userLogged.getId() + "/" + false + "/"
-						+ LocalDateTime.now(), null);
-
-				userLoggedResponse = new UserResultDTO(env.getProperty("error_unlogged_code"),
-						env.getProperty("error_unlogged_description"));
+				throw new UserLoggingException();
 			}
 
-		} else {
-			userLoggedResponse = new UserResultDTO(env.getProperty("error_message_not_user_logged_code"),
-					env.getProperty("error_message_not_user_logged_description"));
 		}
+
 		return userLoggedResponse;
 	}
-	
-	private UserResultDTO getUserResultDTO() {
-		
-		UserDTO userLogged = template.getForObject(URLConstans.USERS_URL + "/users/logged", UserDTO.class);
 
-		UserResultDTO userLoggedResponse = getUserLoggedResponse(userLogged);
+	private UserResultDTO getUserResultDTO(boolean isLogging) {
+
+		UserDTO userLogged = retrieveUser.getUserLogged();
+
+		UserResultDTO userLoggedResponse = getUserLoggedResponse(userLogged, isLogging);
+
 		return userLoggedResponse;
 	}
 

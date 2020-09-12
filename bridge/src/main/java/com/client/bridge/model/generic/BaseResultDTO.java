@@ -17,6 +17,12 @@ public class BaseResultDTO {
 		this.responseDescription = responseDescription;
 	}
 	
+//	public BaseResultDTO(String responseCode, String responseDescription) {
+//		super();
+//		this.responseCode = responseCode;
+//		this.responseDescription = responseDescription;
+//	}
+	
 	public BaseResultDTO(BaseResultDTO result) {
 		super();
 		this.responseCode = result.getResponseCode();
